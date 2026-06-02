@@ -1,0 +1,110 @@
+services:
+  # Ollama - 本地 Embedding / 推理
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama  # 使用已有的外部卷，保留已下载模型
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # Napcat - QQ 机器人
+  napcat:
+    image: mlikiowa/napcat-docker:latest
+    container_name: napcat
+    restart: always
+    environment:
+      - WEBUI_TOKEN=${WEBUI_TOKEN}
+    ports:
+      - "6099:6099"
+      - "13000:3000"
+      - "13001:3001"
+    volumes:
+      - ./napcat/QQ:/app/.config/QQ
+      - ./napcat/config:/app/napcat/config
+
+  # AstrBot - AI 对话引擎
+  astrbot:
+    image: soulter/astrbot:latest
+    container_name: astrbot
+    restart: always
+    ports:
+      - "6185:6185"
+      - "6199:6199"
+    volumes:
+      - ./astrbot/data:/AstrBot/data
+      - bay-data:/bay-data:ro
+      - ./astrbot/pip-packages/site-packages:/usr/local/lib/python3.12/site-packages
+    environment:
+      - BAY_DATA_DIR=/bay-data
+      - NO_PROXY=localhost,127.0.0.1,gpt-sovits,ollama,bay,shipyard-bay,napcat,token-plan-cn.xiaomimimo.com,api.siliconflow.cn,api.deepseek.com,ark.cn-beijing.volces.com
+      - no_proxy=localhost,127.0.0.1,gpt-sovits,ollama,bay,shipyard-bay,napcat,token-plan-cn.xiaomimimo.com,api.siliconflow.cn,api.deepseek.com,ark.cn-beijing.volces.com
+
+  # Shipyard Bay - 管理面板
+  bay:
+    image: ghcr.io/astrbotdevs/shipyard-neo-bay:latest
+    container_name: shipyard-bay
+    restart: always
+    ports:
+      - "8114:8114"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./bay-config.yaml:/app/config.yaml
+      - bay-data:/data
+      - bay-cargos:/cargos
+
+  # GPT-SoVITS - TTS 语音合成
+  # 使用 xxxxrt666 镜像（有 v2 API，支持 /tts 端点）
+  gpt-sovits:
+    image: xxxxrt666/gpt-sovits:latest
+    container_name: gpt-sovits
+    restart: unless-stopped
+    ports:
+      - "9880:9880"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      # 模型文件
+      - ./gpt-sovits/models/Airs_Chinese-e15.ckpt:/workspace/GPT-SoVITS/GPT_weights/Airs_Chinese-e15.ckpt:ro
+      - ./gpt-sovits/models/Airs_Chinese_e8_s400.pth:/workspace/GPT-SoVITS/SoVITS_weights/Airs_Chinese_e8_s400.pth:ro
+      # 预训练模型
+      - ./gpt-sovits/pretrained_models/chinese-roberta-wwm-ext-large:/workspace/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large:ro
+      - ./gpt-sovits/pretrained_models/chinese-hubert-base:/workspace/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-hubert-base:ro
+      - ./gpt-sovits/pretrained_models/sv:/workspace/GPT-SoVITS/GPT_SoVITS/pretrained_models/sv:ro
+      # 参考音频
+      - ./gpt-sovits/reference_audio:/workspace/reference_audio
+      # 自定义配置（去掉 :ro，程序需要写入）
+      - ./gpt-sovits/config/tts_infer.yaml:/workspace/GPT-SoVITS/GPT_SoVITS/configs/tts_infer.yaml
+      # 启动脚本（修复 torchcodec 兼容性）
+      - ./gpt-sovits/start.sh:/workspace/GPT-SoVITS/start.sh:ro
+      # 输出目录
+      - ./gpt-sovits/output:/workspace/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    working_dir: /workspace/GPT-SoVITS
+    command: ["bash", "/workspace/GPT-SoVITS/start.sh"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9880/docs"]
+      interval: 300s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+volumes:
+  bay-data:
+  bay-cargos:
+  ollama_data:
+    external: true

@@ -1,0 +1,45 @@
+# 模型文件（太大，需要单独下载）
+gpt-sovits/models/*.ckpt
+gpt-sovits/models/*.pth
+gpt-sovits/models_backup/
+gpt-sovits/pretrained_models/
+*.safetensors
+
+# 音频文件（需要单独准备）
+gpt-sovits/reference_audio/*.wav
+gpt-sovits/reference_audio/*.mp3
+gpt-sovits/output/
+
+# AstrBot 运行时数据
+astrbot/data/*.db
+astrbot/data/*.zip
+astrbot/data/temp/
+astrbot/data/chat_history/
+astrbot/data/attachments/
+astrbot/data/plugin_data/
+astrbot/data/plugins_data/
+astrbot/data/webchat/
+astrbot/data/dist/
+astrbot/data/site-packages/
+astrbot/data/t2i_templates/
+astrbot/data/sandbox_skills_cache.json
+astrbot/pip-packages/
+
+# NapCat 运行时数据
+napcat/QQ/
+napcat/config/passkey.json
+napcat/config/napcat_*.json
+napcat/config/onebot11_*.json
+napcat/config/napcat_protocol_*.json
+
+# Docker
+*.bak
+
+# 系统
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+
+# 环境变量（使用 .env.example 作为模板）
+.env

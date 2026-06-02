@@ -1,0 +1,65 @@
+server:
+  host: "0.0.0.0"
+  port: 8114
+
+database:
+  url: "sqlite+aiosqlite:////data/bay.db"
+  echo: false
+
+driver:
+  type: docker
+  image_pull_policy: always
+  docker:
+    socket: "unix:///var/run/docker.sock"
+    connect_mode: container_network
+    network: "tendoar1sbot_default"
+    publish_ports: false
+    host_port: null
+
+cargo:
+  root_path: "/cargos"
+  default_size_limit_mb: 1024
+  mount_path: "/workspace"
+
+security:
+  # 【这里的密码就是等会儿要在 AstrBot 后台填的密码】
+  api_key: "${BAY_API_KEY}"
+  allow_anonymous: false
+
+warm_pool:
+  enabled: true
+  warmup_queue_workers: 2
+  warmup_queue_max_size: 256
+  interval_seconds: 30
+  run_on_startup: true
+
+profiles:
+  - id: python-default
+    description: "Standard Python sandbox"
+    image: "ghcr.io/astrbotdevs/shipyard-neo-ship:latest"
+    runtime_type: ship
+    runtime_port: 8123
+    resources:
+      cpus: 1.0
+      memory: "1g"
+    capabilities:
+      - filesystem
+      - shell
+      - python
+    idle_timeout: 1800
+    warm_pool_size: 1
+    env: {}
+
+gc:
+  enabled: true
+  run_on_startup: true
+  interval_seconds: 300
+  instance_id: "bay-prod"
+  idle_session:
+    enabled: true
+  expired_sandbox:
+    enabled: true
+  orphan_cargo:
+    enabled: true
+  orphan_container:
+    enabled: true
