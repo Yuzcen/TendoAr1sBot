@@ -13,6 +13,12 @@
 
 天童爱丽丝（Aris）中文语音 TTS
 
+[![Release](https://img.shields.io/github/v/release/Yuzcen/TendoAr1sBot?style=flat-square)](https://github.com/Yuzcen/TendoAr1sBot/releases)
+[![Docker](https://img.shields.io/badge/Docker-Compose-blue?style=flat-square&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![AstrBot](https://img.shields.io/badge/AstrBot-v4.8+-purple?style=flat-square)](https://astrbot.app/)
+[![GPT-SoVITS](https://img.shields.io/badge/GPT--SoVITS-v2-red?style=flat-square)](https://github.com/RVC-Boss/GPT-SoVITS)
+[![License](https://img.shields.io/github/license/Yuzcen/TendoAr1sBot?style=flat-square)](LICENSE)
+
 </div>
 
 ## 架构
