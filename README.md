@@ -13,7 +13,7 @@
 ---
 
 
-**QQ 机器人全家桶 — AstrBot + Ollama（无 So-VITS 分支）**
+**QQ 机器人全家桶 — AstrBot + Ollama（纯 CPU 版）**
 
 天童爱丽丝（Aris）文字对话
 
@@ -40,8 +40,6 @@
 ## 环境要求
 
 - Docker + Docker Compose
-- NVIDIA GPU（可选，用于 Ollama 本地推理）
-- NVIDIA Container Toolkit（如使用 GPU）
 
 ## 快速部署
 

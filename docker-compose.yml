@@ -8,13 +8,6 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama  # 使用已有的外部卷，保留已下载模型
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
 
   # Napcat - QQ 机器人
   napcat:
