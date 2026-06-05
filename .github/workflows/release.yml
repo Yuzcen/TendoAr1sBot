@@ -38,16 +38,8 @@ jobs:
           rsync -av \
             --exclude='.git' \
             --exclude='.env' \
-            --exclude='*.ckpt' \
-            --exclude='*.pth' \
-            --exclude='*.bin' \
-            --exclude='*.safetensors' \
             --exclude='napcat/QQ' \
             --exclude='astrbot/data' \
-            --exclude='gpt-sovits/output' \
-            --exclude='gpt-sovits/models' \
-            --exclude='gpt-sovits/pretrained_models' \
-            --exclude='gpt-sovits/reference_audio' \
             --exclude='pip-packages' \
             --exclude='__pycache__' \
             --exclude='*.pyc' \
